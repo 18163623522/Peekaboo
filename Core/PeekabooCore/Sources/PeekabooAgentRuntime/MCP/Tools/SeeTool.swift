@@ -96,6 +96,9 @@ public struct SeeTool: MCPTool {
                     Increase this for flat Qt/Electron panels with many sibling controls.
                     """,
                     minimum: 1),
+                ObservedElementTableMetadata.argumentName: SchemaBuilder.boolean(
+                    description: ObservedElementTableMetadata.argumentDescription,
+                    default: false),
             ],
             required: [])
     }
@@ -171,10 +174,11 @@ public struct SeeTool: MCPTool {
             return try await self.buildToolResponse(
                 snapshot: snapshot,
                 elements: elements,
-                output: ScreenshotOutput(
+                output: SeeResponseOutput(
                     screenshotPath: publishedPaths.rawPath,
                     annotatedPath: publishedPaths.annotatedPath,
-                    imageData: responseImages.annotated ?? responseImages.raw),
+                    imageData: responseImages.annotated ?? responseImages.raw,
+                    includeElements: request.includeElements),
                 target: target,
                 actionResult: validatedActionResult)
         } catch {
@@ -353,7 +357,7 @@ public struct SeeTool: MCPTool {
     private func buildToolResponse(
         snapshot: UISnapshot,
         elements: [UIElement],
-        output: ScreenshotOutput,
+        output: SeeResponseOutput,
         target: ObservationTargetArgument,
         actionResult: UIAutomationActionResult<DesktopObservationResult>) async throws -> ToolResponse
     {
@@ -378,7 +382,8 @@ public struct SeeTool: MCPTool {
             snapshot: snapshot,
             elements: elements,
             observation: observation,
-            actionResult: actionResult)
+            actionResult: actionResult,
+            includeElements: output.includeElements)
         var summary = ToolEventSummary(
             targetApp: snapshot.applicationName,
             windowTitle: snapshot.windowTitle,
@@ -395,7 +400,8 @@ public struct SeeTool: MCPTool {
         snapshot: UISnapshot,
         elements: [UIElement],
         observation: DesktopObservationResult,
-        actionResult: UIAutomationActionResult<DesktopObservationResult>) throws -> Value
+        actionResult: UIAutomationActionResult<DesktopObservationResult>,
+        includeElements: Bool = false) throws -> Value
     {
         let diagnostics = ObservationDiagnosticsMetadata.merge(
             observation,
@@ -415,6 +421,15 @@ public struct SeeTool: MCPTool {
             }
         if let focusedElement = snapshot.focusedElement {
             fields["focused_element"] = try Value(focusedElement)
+        }
+        if includeElements, let detection = observation.elements {
+            // Same presentation (ROI-local) bounds as the text summary and `peekaboo see --json`.
+            let presented = DesktopObservationROIProcessor.presentationElements(
+                detection.elements,
+                viewport: observation.capture.metadata.viewport)
+            fields[ObservedElementTableMetadata.key] = try ObservedElementTableMetadata.value(
+                for: presented.all,
+                metadata: detection.metadata)
         }
         return try ObservationActionResultSupport.metadata(
             merging: fields,
