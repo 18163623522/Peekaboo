@@ -662,8 +662,8 @@ struct CLIRuntimeSmokeTests {
         let nextTool = clipboardTail.dropFirst().range(of: "\n#### `")?.lowerBound ?? clipboardTail.endIndex
         let clipboardSection = clipboardTail[..<nextTool]
         let compactClipboard = clipboardSection.split(whereSeparator: \.isWhitespace).joined(separator: " ")
-        #expect(compactClipboard.contains("Available actions are `get` and `save`"))
-        #expect(compactClipboard.contains("Options: `get`, `save`"))
+        #expect(compactClipboard.contains("Available actions are `status`, `get` and `save`"))
+        #expect(compactClipboard.contains("Options: `status`, `get`, `save`"))
         #expect(!clipboardSection.contains("**Examples:**"))
         #expect(!clipboardSection.contains(#""action": "set""#))
         #expect(!clipboardSection.contains("peekaboo clipboard set"))
@@ -716,7 +716,7 @@ struct CLIRuntimeSmokeTests {
                 #expect(properties["foreground"] == nil)
                 #expect(description.contains("focus: Unavailable under background-only authority"))
             case "clipboard":
-                #expect(actions == Set(["get", "save"]))
+                #expect(actions == Set(["status", "get", "save"]))
                 #expect(properties["text"] == nil)
                 #expect(description.contains("persistently"))
                 #expect(description.contains("shared clipboard state"))
