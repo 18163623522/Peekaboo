@@ -28,6 +28,7 @@
 - Add opt-in `include_elements` to the `see` and `inspect_ui` MCP tools, returning the element table as structured `_meta.ui_elements` (same fields as `see --json`) with its `snapshot_id`, so clients can act on element IDs without parsing the text summary; default responses are unchanged. Thanks @gxcsoccer.
 
 - Resolve live exact-PID verification through targeted application lookup instead of repeatedly collecting every app's metadata; unrelated inventory warnings no longer block the target, while generation, incomplete-target and absence checks remain fail-closed.
+- Verify positive element existence from the same exact-identifier evidence used for value matches when unrelated Accessibility reads fail; share witness validation while preserving unknown absence, ambiguity, truncated observations and target-drift checks.
 
 ## 4.6.0 - 2026-09-25
 
