@@ -13,6 +13,8 @@ An unrelated Accessibility read failure does not invalidate independently observ
 
 Without `--screenshot`, verification does not probe or claim ScreenCaptureKit ownership, and ambient capture-engine settings do not change its selected host. Requested screenshots retain the normal capture-safety checks.
 
+For a requested screenshot, choose classic capture with `PEEKABOO_CAPTURE_ENGINE=classic`; `verify` does not expose `see`'s `--capture-engine` flag.
+
 Results are ternary. `satisfied` exits 0, `unsatisfied` exits 1, and `unknown` exits 2. Evaluated results in JSON output include every predicate result and an `unknown_reason` field; it is `null` when the result is not unknown.
 
 Tool failures that prevent evaluation also exit 2. These failures use the standard error envelope in JSON mode, without predicate results or an `unknown_reason` field.
@@ -46,4 +48,4 @@ peekaboo verify --pid 1234 --window-bounds 40,80,1200,800,2 --timeout 10s
 
 The command executes the same `verify_state` MCP tool used by agents, including its 100 ms fresh-observation polling, stability sampling, exact process/window identity checks, and hard ten-second deadline.
 
-For a live explicit PID, polling reads that target's application metadata rather than a full application inventory. Target-specific warnings, failed lookups and process-generation changes remain `unknown`. Proving absence when the native generation is unavailable still requires complete inventory evidence; named-app selectors and optional final screenshots retain their existing inventory checks.
+For a live explicit PID, polling reads that target's application metadata rather than a full application inventory. Target-specific warnings, failed lookups and process-generation changes remain `unknown`. Proving absence when the native generation is unavailable still requires complete inventory evidence, as do named-app selectors during polling. Optional final screenshots revalidate the pinned process generation and exact window before and after capture, without repeating application inventory.
