@@ -11,6 +11,14 @@ read_when:
 
 Observation is read-only with respect to focus: targeting a background app does not activate it or move its windows.
 
+The command's `--timeout` also bounds pixel-only observations (`--no-elements`, raw image stdout, area, and multi
+capture), including snapshot reservation, capture, optional analysis, and failure cleanup. Multiple captures share
+one budget rather than restarting it for each image. Timed-out work cannot later publish successful command output.
+Abandoned attempts remove their generated raw-stdout files once preparation settles and start best-effort cleanup of
+their own reserved snapshot; cleanup does not extend an expired deadline, and remote cleanup is not guaranteed after
+the CLI exits. Caller-requested image paths are not removed. Host discovery precedes this command budget; synchronous
+native calls cannot be preempted.
+
 Timeout handling for plain observations, including AX-tree-only reads, does not advance the desktop mutation
 watermark or borrow an enclosing mutation's barrier. Completing a successful read does not by itself invalidate its
 fresh implicit snapshot. Other desktop mutations can still invalidate it. Explicit `--web-focus` and menu-opening
