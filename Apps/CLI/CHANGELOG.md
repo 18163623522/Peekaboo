@@ -7,10 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## 4.7.0 - 2026-09-29
 
-**Highlights:** Fix the 4.6.0 CLI startup failure on Macs without the macOS 27 runtime, add GPT-6 Astra, Sol, and Luna models, keep unattended clipboard reads from triggering macOS privacy prompts, give MCP and JSON clients structured element tables, focused text selection, and visible display bounds, and make compatible-provider Agent streaming reliable.
+**Highlights:** Fix the 4.6.0 CLI startup failure on Macs without the macOS 27 runtime, add GPT-6 Astra, Sol, and Luna plus GPT-6.1 Sol models, keep unattended clipboard reads from triggering macOS privacy prompts, give MCP and JSON clients structured element tables, focused text selection, and visible display bounds, and make compatible-provider Agent streaming reliable.
 
 - Keep CLI builds on Swift Collections 1.6.0 and reject unsupported strong borrowing-runtime imports in release artifacts, preventing the 4.6.0 startup failure on supported Macs without the macOS 27 runtime. Thanks @changexbc and @jandubois! #831.
 - Add GPT-6 Astra, Sol, and Luna selection through Tachikoma, preserving the chosen tier and 128K output allowance for native and compatible agent routes, and omitting unsupported temperature controls on reasoning routes.
+- Add GPT-6.1 Sol selection through Tachikoma, retaining its 128K output allowance on native and compatible Agent routes and validating its supported reasoning settings.
 - Refuse unattended clipboard reads before macOS privacy prompts, including Agent context and current-clipboard paste; share read admission with temporary writes, preserve retry-unsafe writes when readback is unavailable, and add content-free `clipboard status` plus explicit manual CLI `--allow-prompt` opt-in.
 - Preserve newer user or application clipboard updates during CLI and MCP paste cleanup, including cancellation and partial-write failures; require silent clipboard-read access and complete prior contents before replacement, restore only while the temporary generation is owned, and retain earlier clipboard effects when input is refused.
 - Add opt-in `include_elements` to the `see` and `inspect_ui` MCP tools, returning the element table as structured `_meta.ui_elements` (same fields as `see --json`) with its `snapshot_id`, so clients can act on element IDs without parsing the text summary; default responses are unchanged. Thanks @gxcsoccer.
