@@ -46,7 +46,7 @@ struct DialogDiscoveryCommandTests {
         let dialogs = try StubDiscoveredDialogService()
         let services = DiscoveryCommandServices(dialogs: dialogs)
         var command = try DialogCommand.ListSubcommand.parse([])
-        let output = try await self.capture {
+        let output = try await captureStandardOutputBytes {
             try await command.run(using: self.runtime(services))
         }
         let envelope = try #require(JSONSerialization.jsonObject(with: output) as? [String: Any])
@@ -112,7 +112,7 @@ struct DialogDiscoveryCommandTests {
         let dialogs = try StubDiscoveredDialogService()
         let services = DiscoveryCommandServices(dialogs: dialogs)
         var command = try DialogCommand.ClickSubcommand.parse(["--button", "Don't Allow"])
-        _ = try await self.capture { try await command.run(using: self.runtime(services)) }
+        _ = try await captureStandardOutputBytes { try await command.run(using: self.runtime(services)) }
         #expect(dialogs.preparedRequests.count == 1)
         #expect(dialogs.preparedRequests.first?.target.hasTarget == false)
         #expect(dialogs.preparedRequests.first?.buttonText == "Don't Allow")
@@ -153,7 +153,7 @@ struct DialogDiscoveryCommandTests {
         let runtime = self.runtime(services)
         let targetArguments = targeted ? ["--pid", "42", "--window-id", "700"] : []
         var command = try DialogCommand.ListSubcommand.parse(targetArguments + arguments)
-        let output = try await self.capture {
+        let output = try await captureStandardOutputBytes {
             let exitCode = await #expect(throws: ExitCode.self) {
                 try await command.run(using: runtime)
             }
@@ -191,27 +191,6 @@ struct DialogDiscoveryCommandTests {
                 desktopMutationWatermarkStore: DesktopMutationWatermarkStore(directoryURL: services.directory)
             )
         )
-    }
-
-    private func capture(_ operation: () async throws -> Void) async throws -> Data {
-        let pipe = Pipe()
-        fflush(stdout)
-        let original = dup(STDOUT_FILENO)
-        guard original >= 0, dup2(pipe.fileHandleForWriting.fileDescriptor, STDOUT_FILENO) >= 0 else {
-            throw POSIXError(.EIO)
-        }
-        defer { close(original) }
-        do {
-            try await operation()
-        } catch {
-            fflush(stdout)
-            _ = dup2(original, STDOUT_FILENO)
-            throw error
-        }
-        fflush(stdout)
-        _ = dup2(original, STDOUT_FILENO)
-        try pipe.fileHandleForWriting.close()
-        return try pipe.fileHandleForReading.readToEnd() ?? Data()
     }
 }
 
