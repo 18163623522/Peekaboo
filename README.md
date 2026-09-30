@@ -51,9 +51,9 @@ peekaboo see --app Finder --json
 
 That is the core loop: observe the current screen, choose an element from the result, and act on it.
 
-## What's new in 4.6.0
+## What's new in 4.7.0
 
-Peekaboo 4.6.0 makes typing safer, bounds clipboard and desktop-operation waits, and restores Codex MCP connections and browser-capable GUI Bridge startup. It adds `agent --no-desktop-context`, explicit background typing strategies, observed focus identity in `see --json`, and clearer Bridge status. Direct Swift `ApplicationService` callers must now use `try await`; see the changelog Compatibility notes.
+Peekaboo 4.7.0 fixes the 4.6.0 CLI startup failure on Macs without the macOS 27 runtime and adds GPT-6 Astra, Sol, and Luna model selection. Unattended clipboard reads no longer trigger macOS privacy prompts, and paste cleanup preserves newer clipboard contents. MCP clients can request structured element tables with `include_elements`, CLI JSON and observations report focused text selection and visible display bounds, and compatible-provider Agent streams keep fragmented tool arguments intact. CLI clipboard reads that previously prompted now refuse; see the changelog Compatibility notes for `clipboard status` and `--allow-prompt`.
 
 ## Automate an app
 
