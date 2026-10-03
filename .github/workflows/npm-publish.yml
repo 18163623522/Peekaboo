@@ -108,7 +108,7 @@ jobs:
           if [[ "$VERSION" == *-* ]]; then
             tag=beta
           fi
-          npm publish "dist/steipete-peekaboo-${VERSION}.tgz" \
+          npm publish "./dist/steipete-peekaboo-${VERSION}.tgz" \
             --access public --tag "$tag" --registry "$NPM_REGISTRY"
 
       - name: Verify registry integrity
