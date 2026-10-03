@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- Bound ScreenCaptureKit process-safety signing inspections to two concurrent workers across censuses, preserving complete blocker collection, identity checks, registration retries, and fail-closed readiness.
+- Preserve Bridge route, reported target receipts, hints, and causes on typed stale-snapshot CLI refusals instead of replacing them with local errors; keep snapshot-consumption and finalization safeguards unchanged.
+- Preserve retry-safe no-dispatch outcomes for background wheel failures before the first event, including stale or out-of-window geometry, without weakening accepted-prefix or uncertain-delivery failures.
+- Recognize Safari's framework-linked executable and scroll-area containers for eligible exact-window background wheel dispatch, preserving hidden-app exclusions, exact receipt checks, and unverified retry-unsafe outcomes.
+- Preserve unsupported background scrolls as exact-target, retry-safe no-dispatch refusals through Bridge instead of reporting a possible mutation or implying all background scroll is Accessibility-only.
+- Sign debug CLI builds with the canonical Peekaboo CLI identifier so they satisfy existing GUI Bridge and deployment healthcheck identity checks.
+- Preserve native Accessibility date values as ISO-8601 UTC timestamps in UI observations instead of silently omitting them, including Calendar's date-valued controls.
+- Explain that exact-window paste capability refusals can result from custom-socket Bridge trust limits, not only an outdated host, without changing trust or retry behavior.
 - Prepare exact standard background windows for temporary rich/binary paste using observed blank chrome and retained editor state, preserving clipboard ownership, foreground isolation, owed releases, and truthful composite receipts through Bridge protocol 1.41. #877.
 - Recover ScreenCaptureKit readiness when a slow startup safety scan later completes, preserving fail-closed capture while pending or failed and the existing per-capture ownership checks.
 - Fence temporary exact-window background paste with the retained clipboard write generation, refusing unsupported hosts before writing and stopping new key-downs after another copy while preserving owed key releases and newer clipboard contents.
