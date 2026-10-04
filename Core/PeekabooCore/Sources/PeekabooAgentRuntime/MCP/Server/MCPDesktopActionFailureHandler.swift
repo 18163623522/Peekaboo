@@ -47,10 +47,19 @@ enum MCPDesktopActionSnapshotInvalidator {
 }
 
 enum MCPElementActionSnapshotAuthority {
-    static func expectedTargetIdentity(_ snapshot: UISnapshot) throws -> DesktopTargetIdentity {
+    static func expectedTargetIdentity(
+        _ snapshot: UISnapshot,
+        requireExactWindow: Bool = false) throws -> DesktopTargetIdentity
+    {
+        let receipt: SnapshotTargetReceipt
         do {
-            let identity = try snapshot.targetReceipt().requireIdentity()
-            return try DesktopTargetIdentity(processIdentity: identity.processIdentity)
+            receipt = try snapshot.targetReceipt()
+            if !requireExactWindow {
+                return try DesktopTargetIdentity(processIdentity: receipt.requireIdentity().processIdentity)
+            }
+            if case .invalidated = receipt.targetEvidence {
+                _ = try receipt.requireIdentity()
+            }
         } catch {
             throw DesktopActionFailure.preDispatchRefusal(
                 reason: .targetUnavailable,
@@ -59,5 +68,13 @@ enum MCPElementActionSnapshotAuthority {
                 causeDescription: error.localizedDescription,
                 standardErrorCode: .snapshotStale)
         }
+        guard let exactWindow = receipt.identity?.exactWindow else {
+            throw DesktopActionFailure.preDispatchRefusal(
+                reason: .invalidRequest,
+                message: "Text selection requires a fresh exact-window snapshot.",
+                hint: "Run 'see' or 'inspect_ui' with window_id, then retry with that fresh exact-window snapshot.",
+                standardErrorCode: .invalidInput)
+        }
+        return DesktopTargetIdentity(exactWindow: exactWindow)
     }
 }

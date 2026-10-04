@@ -5,6 +5,10 @@ All notable changes to Peekaboo CLI will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+- Add background `select-text` and MCP `select_text` for literal selections or caret placement with adjacent prefix/suffix context, UTF-16 range verification, and retry-safe refusals for ambiguous or stale targets.
+
 ## 4.8.0 - 2026-10-03
 
 **Highlights:** Add exact-window background drag to the CLI and MCP, make background rich paste work in freshly launched windows and fence it against concurrent clipboard changes, extend background scrolling to Safari, report date-valued controls in observations, and recover capture readiness after slow startup checks.
