@@ -1,6 +1,10 @@
 #!/bin/bash
 set -euo pipefail
 
+# The release preflight exports the publication signer for its signed CLI build; these fixtures are
+# ad-hoc signed, so the verifier must not inherit that expectation.
+unset MAC_RELEASE_CODESIGN_IDENTITY MAC_RELEASE_CODESIGN_TEAM_ID
+
 ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 TEST_DIR=$(mktemp -d /tmp/peekaboo-swift-runtime-test.XXXXXX)
 trap 'rm -rf "$TEST_DIR"' EXIT
