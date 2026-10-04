@@ -53,7 +53,7 @@ That is the core loop: observe the current screen, choose an element from the re
 
 ## What's new in 4.8.0
 
-Peekaboo 4.8.0 adds exact-window background drag to the CLI and MCP, and makes background rich paste work in freshly launched windows while fencing it against concurrent clipboard changes. Background scrolling now reaches Safari, observations report date-valued controls, and capture recovers when slow startup safety checks finish late. Background drag and exact-window rich paste need the matching 4.8.0 Peekaboo app as the Bridge host; see the changelog Compatibility notes.
+Peekaboo 4.8.0 adds exact-window background drag, text selection (`select-text`), and coordinate scrolling (`scroll --at`) to the CLI and MCP, and makes background rich paste work in freshly launched windows while fencing it against concurrent clipboard changes. Background scrolling now reaches Safari, `see --fresh` takes uncached Accessibility reads on request, observations report date-valued controls, and capture recovers when slow startup safety checks finish late. These background actions and fresh reads need the matching 4.8.0 Peekaboo app as the Bridge host; see the changelog Compatibility notes.
 
 ## Automate an app
 
