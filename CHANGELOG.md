@@ -2,8 +2,8 @@
 
 ## Unreleased
 
-- Preserve the underlying cause of failed background paste preparation reads, without changing input dispatch, deadlines, or retry safety.
 - Refresh Playground testing guidance for v4 inventories, signed fixtures, fresh exact-window snapshots, and background outcome verification without input replay.
+- Preserve the underlying cause of failed background paste preparation reads, without changing input dispatch, deadlines, or retry safety.
 
 ## 4.8.0 - 2026-10-03
 
