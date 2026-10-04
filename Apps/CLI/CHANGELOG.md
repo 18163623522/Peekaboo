@@ -7,17 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
-- Add background `scroll --at x,y` with explicit `--global` basis and MCP coordinate-reference mapping, requiring fresh exact-window pixels and protocol-1.43 support, with independent native-WebKit wheel delivery when no semantic AX receiver is exposed and no shared-pointer fallback.
-- Remove proven duplicate `see` / `inspect_ui` element listings from Agent provider requests while preserving observation evidence, raw MCP/CLI output, and saved history.
 - Correct the visualizer log helper's receiver subsystem and include info/debug output while preserving explicit predicates, without changing logging settings or rendering behavior.
-- Continue background AX typing when the value write itself relocates the caret, binding the cursor update to its confirmed completion state and preserving fail-closed later drift, unknown completion, and nested error causes.
-- Clarify backward versus forward Delete key names and supported Command modifiers in `press` help and docs, without changing key mappings.
-- Add opt-in `see --fresh` and MCP `see` / `inspect_ui` freshness with uncached AX evidence, truthful `used_cache` metadata, and fail-closed host compatibility while preserving default caching and partial-tree limits.
-- Add background `select-text` and MCP `select_text` for literal selections or caret placement with adjacent prefix/suffix context, UTF-16 range verification, and retry-safe refusals for ambiguous or stale targets.
 
 ## 4.8.0 - 2026-10-03
 
-**Highlights:** Add exact-window background drag to the CLI and MCP, make background rich paste work in freshly launched windows and fence it against concurrent clipboard changes, extend background scrolling to Safari, report date-valued controls in observations, and recover capture readiness after slow startup checks.
+**Highlights:** Add exact-window background drag, text selection, and coordinate scrolling to the CLI and MCP, make background rich paste work in freshly launched windows and fence it against concurrent clipboard changes, extend background scrolling to Safari, add opt-in fresh Accessibility reads to `see`, and recover capture readiness after slow startup checks.
 
 - Add bounded exact-window background drag to CLI and MCP using one held-pointer owner, generation-bound last-point cleanup, and protocol-1.39 receipts; preserve explicit foreground gestures and report unverified retry-unsafe delivery without claiming the drop succeeded.
 - Report missing background-drag source and destination IDs as explicit retry-safe, zero-dispatch `ELEMENT_NOT_FOUND` refusals without inventing receiver receipts or changing foreground error semantics.
@@ -27,13 +21,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Report failed background rich-paste preparation observations as no-input refusals, preserving earlier clipboard/preparation effects and avoiding misleading claims that a focus request was sent.
 - Add explicit `--allow-temporary-clipboard` authority for Agent and public MCP to paste bounded base64 payloads through fresh exact-window snapshots while keeping UI background-only, requiring fresh resume opt-in, preserving ownership-aware cleanup and retry-unsafe receipts, and retaining nested/managed Agent attenuation.
 - Preserve input-delivery and message-only refusal causes across composed background preparation outcomes, including content-free native chrome observation diagnostics, without changing dispatch or retry safety.
+- Add background `select-text` and MCP `select_text` for literal selections or caret placement with adjacent prefix/suffix context, UTF-16 range verification, and retry-safe refusals for ambiguous or stale targets.
+- Add background `scroll --at x,y` with explicit `--global` basis and MCP coordinate-reference mapping, requiring fresh exact-window pixels and protocol-1.43 support, with independent native-WebKit wheel delivery when no semantic AX receiver is exposed and no shared-pointer fallback.
 - Recognize Safari's framework-linked executable and scroll-area containers for eligible exact-window background wheel dispatch, preserving hidden-app exclusions, exact receipt checks, and unverified retry-unsafe outcomes.
+- Add opt-in `see --fresh` and MCP `see` / `inspect_ui` freshness with uncached AX evidence, truthful `used_cache` metadata, and fail-closed host compatibility while preserving default caching and partial-tree limits.
 - Preserve native Accessibility date values as ISO-8601 UTC timestamps in UI observations instead of silently omitting them, including Calendar's date-valued controls.
 - Recover ScreenCaptureKit readiness when a slow startup safety scan later completes, preserving fail-closed capture while pending or failed and the existing per-capture ownership checks.
 - Validate Bridge Agent and live certification-producer executables against the running universal-binary slice, avoiding false identity refusals while preserving exact code, path, process-generation, file, and peer-trust checks.
 - Redact inline base64 payloads from Agent live tool-call previews, including nested and partially streamed values, without changing authorized tool input.
+- Remove proven duplicate `see` / `inspect_ui` element listings from Agent provider requests while preserving observation evidence, raw MCP/CLI output, and saved history.
 - Preserve known clipboard cleanup status through Agent paste errors and public MCP metadata, keeping provider claims isolated and canonical dispatch, target, and retry semantics unchanged.
 - Preserve plain and attributed Accessibility value labels in menu listing, path selection, and menu-extra matching, keeping title precedence and ambiguous-name refusals unchanged.
+- Continue background AX typing when the value write itself relocates the caret, binding the cursor update to its confirmed completion state and preserving fail-closed later drift, unknown completion, and nested error causes.
 - Preserve retry-safe no-dispatch outcomes for background wheel failures before the first event, including stale or out-of-window geometry, without weakening accepted-prefix or uncertain-delivery failures.
 - Preserve unsupported background scrolls as exact-target, retry-safe no-dispatch refusals through Bridge instead of reporting a possible mutation or implying all background scroll is Accessibility-only.
 - Preserve reported receiver receipts in MCP background scroll errors without changing retry safety, snapshot invalidation, or foreground global-input attribution.
@@ -47,12 +46,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Explain that exact-window paste capability refusals can result from custom-socket Bridge trust limits, not only an outdated host, without changing trust or retry behavior.
 - Clarify that deprecated `app launch --no-focus` is a compatibility no-op: default launch only verifies an already-running app, while cold launch still requires explicit foreground consent.
 - Clarify that foreground `paste` does not confirm receiver consumption, explain how to inspect an unconfirmed paste outcome instead of replaying it, and add a charset-safe HTML hyperlink paste example. Thanks @marcoantoniofassa! #885.
+- Clarify backward versus forward Delete key names and supported Command modifiers in `press` help and docs, without changing key mappings.
 - Refresh Playground testing guidance for v4 inventories, signed fixtures, fresh exact-window snapshots, and background outcome verification without input replay.
 - Bind companion-app installation and rollback quits to verified exact-path process generations, refusing ambiguous targets, inspection failures, and uncertain retries without raw PID signals. #874.
 
 ### Compatibility
 
-- Exact-window background drag requires a GUI Bridge host at protocol 1.39, and exact-window background rich/binary paste now requires the clipboard-fenced protocol 1.40 path (cold-window preparation uses 1.41). With an older Peekaboo app as the Bridge host, these refuse before any clipboard write or input; update the app together with the CLI.
+- Exact-window background drag requires a GUI Bridge host at protocol 1.39, exact-window background rich/binary paste requires the clipboard-fenced protocol 1.40 path (cold-window preparation uses 1.41), background text selection requires protocol 1.42, and exact-window background coordinate scrolling requires protocol 1.43. Screenshot-backed `see --fresh` through a Bridge host requires its fresh Accessibility tree capability. With an older Peekaboo app as the Bridge host, these fail closed before any clipboard write or input; update the app together with the CLI.
 
 ## 4.7.0 - 2026-09-29
 

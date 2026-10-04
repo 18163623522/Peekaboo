@@ -120,6 +120,7 @@ op run --env-file "$ENVFILE" -- \
 
 The script builds universal CLI, npm package, signed/notarized app zip and branded DMG, appcast, checksums, draft GitHub release, and npm publish.
 Use a non-login shell: profile exports can replace current 1Password ASC IDs with stale values while leaving the current `.p8`, producing a misleading `401`.
+If `main` keeps moving during the release, publish from `release/<version>` with `--release-branch` (see `docs/RELEASING.md`) and land that branch with a merge commit afterwards.
 The piped `y` (and any `| tee`) makes pnpm non-interactive, so with npm 2FA enforced the npm step stops with
 `ERR_PNPM_OTP_NON_INTERACTIVE` after the draft exists; finish with the trusted-publishing workflow below.
 The driver passes `MAC_RELEASE_CALLER_PATH=/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin` to the CLI build's

@@ -1175,6 +1175,7 @@ INCLUDE_MAC_APP=true
 MAC_APP_NOTARIZE=true
 MAC_APP_APPCAST=true
 REUSE_BUILT_CLI=false
+RELEASE_FROM_BRANCH=false
 EXPECTED_REUSE_SOURCE_COMMIT=""
 RELEASE_PROOF_FILE=""
 
@@ -1202,6 +1203,10 @@ while [[ $# -gt 0 ]]; do
             ;;
         --reuse-built-cli)
             REUSE_BUILT_CLI=true
+            shift
+            ;;
+        --release-branch)
+            RELEASE_FROM_BRANCH=true
             shift
             ;;
         --proof-file)
@@ -1238,6 +1243,7 @@ while [[ $# -gt 0 ]]; do
             echo "  --resume-publication   Resume a partial public release from retained verified artifacts"
             echo "  --retry-npm-publish    With resume, explicitly retry an attempted npm publish still returning E404"
             echo "  --reuse-built-cli      Reuse an exact-HEAD signed/notarized CLI after full verification"
+            echo "  --release-branch       Publish from the checked-out release/<version> branch instead of main"
             echo "  --proof-file PATH      CI/test proof appended to the source-bound GitHub release body"
             echo "  --arm64-only           Build arm64-only binary"
             echo "  --universal            Build universal (arm64+x86_64) binary (default)"
@@ -1283,13 +1289,13 @@ if [[ -n "$RELEASE_PROOF_FILE" ]]; then
 fi
 
 validate_publication_options
-RELEASE_OPTION_FINGERPRINT="$SKIP_CHECKS|$CREATE_GITHUB_RELEASE|$PUBLISH_NPM|$RESUME_PUBLICATION|$RETRY_NPM_PUBLISH|$UNIVERSAL|$INCLUDE_MAC_APP|$MAC_APP_NOTARIZE|$MAC_APP_APPCAST|$REUSE_BUILT_CLI|$RELEASE_PROOF_FILE|$RELEASE_PROOF_SHA256|$BUILD_DIR|$RELEASE_DIR"
+RELEASE_OPTION_FINGERPRINT="$SKIP_CHECKS|$CREATE_GITHUB_RELEASE|$PUBLISH_NPM|$RESUME_PUBLICATION|$RETRY_NPM_PUBLISH|$UNIVERSAL|$INCLUDE_MAC_APP|$MAC_APP_NOTARIZE|$MAC_APP_APPCAST|$REUSE_BUILT_CLI|$RELEASE_FROM_BRANCH|$RELEASE_PROOF_FILE|$RELEASE_PROOF_SHA256|$BUILD_DIR|$RELEASE_DIR"
 
 if [ -f "$MAC_RELEASE_MANIFEST" ]; then
     # shellcheck source=/Users/steipete/Projects/Peekaboo/.mac-release.env
     source "$MAC_RELEASE_MANIFEST"
 fi
-OBSERVED_RELEASE_OPTION_FINGERPRINT="$SKIP_CHECKS|$CREATE_GITHUB_RELEASE|$PUBLISH_NPM|$RESUME_PUBLICATION|$RETRY_NPM_PUBLISH|$UNIVERSAL|$INCLUDE_MAC_APP|$MAC_APP_NOTARIZE|$MAC_APP_APPCAST|$REUSE_BUILT_CLI|$RELEASE_PROOF_FILE|$RELEASE_PROOF_SHA256|$BUILD_DIR|$RELEASE_DIR"
+OBSERVED_RELEASE_OPTION_FINGERPRINT="$SKIP_CHECKS|$CREATE_GITHUB_RELEASE|$PUBLISH_NPM|$RESUME_PUBLICATION|$RETRY_NPM_PUBLISH|$UNIVERSAL|$INCLUDE_MAC_APP|$MAC_APP_NOTARIZE|$MAC_APP_APPCAST|$REUSE_BUILT_CLI|$RELEASE_FROM_BRANCH|$RELEASE_PROOF_FILE|$RELEASE_PROOF_SHA256|$BUILD_DIR|$RELEASE_DIR"
 [[ "$RELEASE_OPTION_FINGERPRINT" == "$OBSERVED_RELEASE_OPTION_FINGERPRINT" ]] ||
     fail "Release manifest changed command-line publication authority"
 validate_publication_options
@@ -1312,6 +1318,10 @@ export NOTARYTOOL_PROFILE
 require_command git
 require_command node
 VERSION=$(node -p "require('$PROJECT_ROOT/package.json').version")
+if [[ "$RELEASE_FROM_BRANCH" == true &&
+      "$(git -C "$PROJECT_ROOT" branch --show-current)" != "release/$VERSION" ]]; then
+    fail "--release-branch requires the release/$VERSION branch to be checked out"
+fi
 if [[ "$RESUME_PUBLICATION" == true ]]; then
     resume_publication
     exit 0
@@ -1348,6 +1358,10 @@ if [ "$SKIP_CHECKS" = false ]; then
         PREPARE_COMMAND=(node scripts/prepare-release.js --no-build --bin "$PROJECT_ROOT/peekaboo")
     else
         PREPARE_COMMAND=(node scripts/prepare-release.js)
+    fi
+    # The preflight still requires the release branch to contain origin/main.
+    if [[ "$RELEASE_FROM_BRANCH" == true ]]; then
+        PREPARE_COMMAND+=(--force)
     fi
     # Keep package credentials and the managed codesign PATH shim out of the
     # complete gate. Keychain paths survive for its later signed CLI build.

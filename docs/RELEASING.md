@@ -88,6 +88,12 @@ directory and generated `appcast.xml` live there, `--resume-publication` must ru
 commit is pushed from it. Remove the clone and `git -C ~/Projects/agent-scripts worktree remove "$STAGE/agent-scripts"`
 only after closeout.
 
+When other work keeps landing on `main` during the release, publish from a `release/<version>` branch instead: create it
+from the current `origin/main`, push it, check it out in the staging clone, and pass `--release-branch` to
+`scripts/release-binaries.sh`. The driver refuses unless exactly that branch is checked out, and the preflight still
+requires the branch to contain `origin/main` when it starts. Land the branch with a merge commit afterwards so the
+`v<version>` tag stays in `main`'s history.
+
 Bumping the pin is a separate reviewed change, never a release-time fix. Review every `skills/release-mac-app` change
 between the pin and the candidate (`git -C ~/Projects/agent-scripts log -p <pin>..<candidate> -- skills/release-mac-app`)
 for credential, signing, notarization, Sparkle, and PATH behavior. Then update the commit and both hashes together

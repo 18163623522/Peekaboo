@@ -620,6 +620,34 @@ if grep -Eq 'pnpm run build:swift|build-swift-(arm|universal)' "$VERIFY_LOG"; th
   echo 'reuse lane rebuilt the CLI' >&2
   exit 1
 fi
+if grep '^prepare-release ' "$VERIFY_LOG" | grep -Fq -- '--force'; then
+  echo 'default preflight allowed a non-main branch' >&2
+  exit 1
+fi
+
+: >"$VERIFY_LOG"
+if run_release "$FIXTURE_COMMIT" safe 'x86_64 arm64' 0 single --release-branch \
+  >"$TEST_ROOT/release-branch-mismatch.out" 2>&1; then
+  echo 'release-branch mode accepted a branch other than release/<version>' >&2
+  exit 1
+fi
+grep -Fq -- '--release-branch requires the release/9.9.9 branch' "$TEST_ROOT/release-branch-mismatch.out"
+if grep -q '^prepare-release ' "$VERIFY_LOG"; then
+  echo 'release-branch mismatch reached the preflight' >&2
+  exit 1
+fi
+fixture_branch=$(git -C "$FIXTURE_ROOT" branch --show-current)
+git -C "$FIXTURE_ROOT" switch -q -c release/9.9.9
+: >"$VERIFY_LOG"
+if ! run_release "$FIXTURE_COMMIT" safe 'x86_64 arm64' 0 single --release-branch \
+  >"$TEST_ROOT/release-branch.out" 2>&1; then
+  cat "$TEST_ROOT/release-branch.out" >&2
+  echo 'release-branch mode rejected release/9.9.9' >&2
+  exit 1
+fi
+grep -Fq "prepare-release scripts/prepare-release.js --no-build --bin $FIXTURE_ROOT/peekaboo --force" "$VERIFY_LOG"
+git -C "$FIXTURE_ROOT" switch -q "$fixture_branch"
+git -C "$FIXTURE_ROOT" branch -q -D release/9.9.9
 
 if ! run_release "$FIXTURE_COMMIT" safe arm64 0 single --arm64-only >"$TEST_ROOT/arm64-only.out" 2>&1; then
   echo 'local arm64-only packaging rejected an already-thin CLI' >&2
