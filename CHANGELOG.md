@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Preserve the underlying cause of failed background paste preparation reads, without changing input dispatch, deadlines, or retry safety.
+
 ## 4.8.0 - 2026-10-03
 
 **Highlights:** Add exact-window background drag to the CLI and MCP, make background rich paste work in freshly launched windows and fence it against concurrent clipboard changes, extend background scrolling to Safari, report date-valued controls in observations, and recover capture readiness after slow startup checks.
