@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Share native and Bridge literal-replacement eligibility without changing confirmation policy, and clarify typing-unit versus native-event counts.
 - Accept equivalent PID aliases consistently in read-only window listing and target resolution, while retaining conflicting-PID errors and strict single-selector mutation gates. Thanks @rudycelekli! #945.
 - Clarify `type --clear` help and generated learning guidance to distinguish eligible native Accessibility clearing from keyboard routes, without changing delivery, targeting, or success rules.
+- Format complete keyboard shortcut names without rewriting substrings, distinguish forward and backward delete aliases in compatibility summaries, and reuse the immutable symbol table. Thanks @rudycelekli! #962.
 - Preserve fractional timeout durations in command and dialog diagnostics instead of truncating them to whole seconds, without changing deadlines or error codes. Thanks @rudycelekli! #946.
 - Strip terminal control scalars from agent/task titles before both VibeTunnel and ANSI output, preserving Unicode joiners and preventing embedded title text from injecting terminal commands. Thanks @rudycelekli! #964.
 - Avoid agent-summary crashes on unrepresentable numeric metadata, preserve each consumer's rounding and lookup rules, and report unusable shell exit codes as unavailable rather than success. Thanks @rudycelekli! #961.
