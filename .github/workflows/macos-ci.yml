@@ -56,6 +56,9 @@ jobs:
       - name: Verify Homebrew release handoff
         run: node --test tests/homebrew-release-assets.test.mjs
 
+      - name: Verify release build-number contracts
+        run: bash scripts/test-release-version.sh
+
       - name: Verify log helper contracts
         run: pnpm run test:log-scripts
 
