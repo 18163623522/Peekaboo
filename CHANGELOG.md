@@ -22,6 +22,7 @@
 - Clarify `type --clear` help and generated learning guidance to distinguish eligible native Accessibility clearing from keyboard routes, without changing delivery, targeting, or success rules.
 - Format complete keyboard shortcut names without rewriting substrings, distinguish forward and backward delete aliases in compatibility summaries, and reuse the immutable symbol table. Thanks @rudycelekli! #962.
 - Preserve fractional timeout durations in command and dialog diagnostics instead of truncating them to whole seconds, without changing deadlines or error codes. Thanks @rudycelekli! #946.
+- Preserve pending native-operation evidence when combining action receipts, without downgrading it to accepted delivery or weakening response-loss and retry-safety semantics. Thanks @rudycelekli! #944.
 - Escape update-feed URLs and metadata as XML while preserving decoded values and literal replacement characters, including multi-parameter URLs. Thanks @rudycelekli! #935.
 - Validate Swift compatibility-library loader paths and required library architectures per executable slice, so another architecture cannot hide a missing path. Thanks @rudycelekli! #937.
 - Reject ZIP entries with unconsumed trailing DEFLATE bytes before extraction, even when their inflated size and CRC match. Thanks @rudycelekli! #956.
