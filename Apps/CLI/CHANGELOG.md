@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+- Preserve conventional shell exit statuses when a wrapped source-build command is terminated by a signal, while retaining mapping integrity checks and lock cleanup. Thanks @rudycelekli! #932.
 - Avoid redundant PNG encoding for unchanged live capture frames, preserving original bytes and metadata while retaining transformed-frame encoding, actual-byte caps, and artifact validation.
 - Show eligible visualizer overlays from a hidden companion app without unhiding or activating it, accepting input, or changing background-input suppression.
 - Fix signed Bridge typing receipts after already-empty clears and already-satisfied caret moves, preserving zero-dispatch no-ops and strict key, delivery and dispatch-count validation.
