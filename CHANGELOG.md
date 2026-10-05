@@ -24,6 +24,7 @@
 - Preserve fractional timeout durations in command and dialog diagnostics instead of truncating them to whole seconds, without changing deadlines or error codes. Thanks @rudycelekli! #946.
 - Escape update-feed URLs and metadata as XML while preserving decoded values and literal replacement characters, including multi-parameter URLs. Thanks @rudycelekli! #935.
 - Validate Swift compatibility-library loader paths and required library architectures per executable slice, so another architecture cannot hide a missing path. Thanks @rudycelekli! #937.
+- Reject ZIP entries with unconsumed trailing DEFLATE bytes before extraction, even when their inflated size and CRC match. Thanks @rudycelekli! #956.
 - Distinguish missing blank title-bar space from changed retained geometry in background paste preparation diagnostics, without relaxing clearance or input guards.
 - Update AXorcist to 0.2.1 to unwrap live Accessibility values and clear inherited typing and final hotkey modifier flags. Thanks @jandubois! #797.
 - Keep CLI and MCP action summaries explicit about unverified or unreported receiver effects, and report paste clipboard cleanup separately without changing canonical outcomes, JSON, retry rules, or exit status.
