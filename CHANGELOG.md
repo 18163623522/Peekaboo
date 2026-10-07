@@ -52,6 +52,19 @@
 - Refuse companion-app deployment when source or staged directory permissions prevent moving or cleaning up the bundle, before stopping the running GUI, while preserving read-only files and leaving artifact permissions unchanged.
 - Stop inferring a captured window's main state from selection, list position, or visibility; retain the existing `false`/unavailable convention and preserve already-supplied main-state metadata without extra Accessibility reads.
 - Keep Playground log filters and message text literal, reject missing option values, preserve export failures and complete JSON/live output, and match native error severity. Thanks @rudycelekli! #968.
+- Validate smooth duration and step overrides for the human MCP move profile, which forces smooth movement but previously dispatched out-of-range overrides. Thanks @rudycelekli! #970.
+- Report MCP cursor movement directions in screen coordinates, where eastward movement was previously reported as west. Thanks @rudycelekli! #960.
+- Report dialog classification and truncation from cached snapshots instead of always returning a non-dialog, untruncated result. Thanks @rudycelekli! #989.
+- Publish release CLI archives and the app ZIP atomically so a failed write leaves any previous artifact intact. Thanks @rudycelekli! #979.
+- Drain ZIP entry readers before the archive closes its descriptor, so a rejected payload no longer crashes later with an uncaught EBADF (#985). Thanks @rudycelekli! #986.
+- Reject release package resolution when the pinned Sparkle checkout has tracked, staged, or untracked changes. Thanks @rudycelekli! #978.
+- Restore clipboard slots from the current persisted contents instead of a stale per-process cache, and keep multi-item clipboards' item order and boundaries through save and restore. Thanks @rudycelekli! #990.
+- Install the Swift compatibility libraries that standalone CLI builds need next to the binary, so a standalone install loads after moving; release builds keep the mandatory older-SDK runtime audit. Thanks @rudycelekli! #982.
+- Bound release-preflight CLI probes with a timeout and report spawn or timeout failures instead of hanging or misreading them as contract failures. Thanks @rudycelekli! #984.
+- Clean up Node runtime build downloads and work directories when an early transfer or temporary-directory allocation fails. Thanks @rudycelekli! #980.
+- Render capture-timeout and rate-limit retry durations that cannot be represented as integers without trapping. Thanks @rudycelekli! #981.
+- Preserve managed screenshots when a snapshot reuses its own stored image as input, copying through a staged file before replacing the artifact. Thanks @rudycelekli! #987.
+- Require canonical lowercase ASCII hex selected-leaf candidate digests, rejecting full-width digits and letters that Swift's hex check accepted. Thanks @rudycelekli! #983.
 
 ## 4.8.0 - 2026-10-03
 
