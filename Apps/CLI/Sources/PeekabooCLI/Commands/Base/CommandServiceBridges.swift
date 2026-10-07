@@ -1079,6 +1079,21 @@ enum MenuServiceBridge {
         }.value
     }
 
+    static func prepareMenuBarItem(
+        menu: any MenuServiceProtocol, request: MenuBarItemPreparationRequest
+    ) async throws -> MenuBarItemInfo {
+        try await Task<MenuBarItemInfo, any Error> { @MainActor in
+            guard let provider = menu as? any MenuServiceScopedMenuBarPreparationProviding else {
+                throw DesktopActionFailure.preDispatchRefusal(
+                    reason: .runtimeIncompatible,
+                    message: "The selected runtime cannot prepare application-scoped menu bar items.",
+                    hint: "Update the selected Peekaboo runtime; scoped clicks never fall back to global lookup."
+                )
+            }
+            return try await provider.prepareMenuBarItem(request)
+        }.value
+    }
+
     static func clickMenuBarItem(
         named name: String,
         menu: any MenuServiceProtocol

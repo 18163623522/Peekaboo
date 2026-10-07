@@ -11,7 +11,12 @@ enum BridgeInputCapabilityFixture {
     static func startHost(
         services: any PeekabooBridgeServiceProviding,
         supportedVersions: ClosedRange<PeekabooBridgeProtocolVersion>,
-        allowedOperations: Set<PeekabooBridgeOperation>) async throws
+        allowedOperations: Set<PeekabooBridgeOperation>,
+        operationLaneCoordinator: DesktopOperationLaneCoordinator = .shared,
+        permissions: PermissionsStatus = .init(
+            screenRecording: true,
+            accessibility: true,
+            postEvent: true)) async throws
         -> (host: PeekabooBridgeHost, client: PeekabooBridgeClient)
     {
         let socketPath = "/tmp/peekaboo-input-capability-\(UUID().uuidString).sock"
@@ -21,9 +26,8 @@ enum BridgeInputCapabilityFixture {
             allowlistedBundles: [],
             supportedVersions: supportedVersions,
             allowedOperations: allowedOperations,
-            permissionStatusEvaluator: { _ in
-                PermissionsStatus(screenRecording: true, accessibility: true, postEvent: true)
-            })
+            desktopOperationLaneCoordinator: operationLaneCoordinator,
+            permissionStatusEvaluator: { _ in permissions })
         let host = PeekabooBridgeHost(
             socketPath: socketPath,
             server: server,

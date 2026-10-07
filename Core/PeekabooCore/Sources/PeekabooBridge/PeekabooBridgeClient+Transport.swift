@@ -189,6 +189,9 @@ extension PeekabooBridgeClient {
     }
 
     private func requireNegotiatedInputCapabilities(for request: PeekabooBridgeRequest) throws {
+        if request.requiresScopedMenuBarActions {
+            try self.requireScopedMenuBarActions()
+        }
         if request.requiresExactFileDialogExecution {
             try self.requireExactFileDialogExecution()
         }

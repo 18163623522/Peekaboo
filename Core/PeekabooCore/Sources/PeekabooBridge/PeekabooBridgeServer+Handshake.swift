@@ -4,6 +4,23 @@ import PeekabooFoundation
 
 @MainActor
 extension PeekabooBridgeServer {
+    static func updateScopedMenuBarActionsCapability(
+        to resolvedHostCapabilities: inout Set<String>,
+        services: any PeekabooBridgeServiceProviding,
+        supportedVersions: ClosedRange<PeekabooBridgeProtocolVersion>,
+        allowedOperations: Set<PeekabooBridgeOperation>)
+    {
+        if supportedVersions.upperBound >= PeekabooBridgeConstants.scopedMenuBarActionsVersion,
+           allowedOperations.isSuperset(of: [.prepareMenuBarItem, .clickMenuBarItemNamed]),
+           services.menu is any MenuServiceScopedMenuBarPreparationProviding,
+           services.menu is any MenuServiceExactLeafActionResultProviding
+        {
+            resolvedHostCapabilities.insert(PeekabooBridgeHostCapability.scopedMenuBarActions)
+        } else {
+            resolvedHostCapabilities.remove(PeekabooBridgeHostCapability.scopedMenuBarActions)
+        }
+    }
+
     static func invalidRequest(for request: PeekabooBridgeRequest) -> PeekabooBridgeErrorEnvelope {
         PeekabooBridgeErrorEnvelope(
             code: .invalidRequest,
@@ -86,6 +103,14 @@ extension PeekabooBridgeServer {
             enabledOps.remove(.exactWindowDrag)
         }
         let clientCapabilities = Set(payload.clientCapabilities ?? [])
+        let supportsScopedMenuBarActions = supportsAttestedOperationReceipts &&
+            negotiated >= PeekabooBridgeConstants.scopedMenuBarActionsVersion &&
+            clientCapabilities.contains(PeekabooBridgeClientCapability.scopedMenuBarActions) &&
+            self.hostCapabilities.contains(PeekabooBridgeHostCapability.scopedMenuBarActions)
+        if !supportsScopedMenuBarActions {
+            advertisedOps.removeAll { $0 == .prepareMenuBarItem }
+            enabledOps.remove(.prepareMenuBarItem)
+        }
         let browserHandoffOperations: Set<PeekabooBridgeOperation> = [
             .browserStatus,
             .browserConnect,
@@ -184,6 +209,11 @@ extension PeekabooBridgeServer {
             """)
 
         var advertisedCapabilities = self.hostCapabilities
+        if !supportsScopedMenuBarActions ||
+            !Set([PeekabooBridgeOperation.prepareMenuBarItem, .clickMenuBarItemNamed]).isSubset(of: advertisedOps)
+        {
+            advertisedCapabilities.remove(PeekabooBridgeHostCapability.scopedMenuBarActions)
+        }
         if !supportsAttestedOperationReceipts ||
             negotiated < PeekabooBridgeConstants.exactFileDialogExecutionVersion ||
             !self.services.dialogs.supportsExactFileDialogExecution ||
@@ -366,6 +396,8 @@ extension PeekabooBridgeServer {
                             PeekabooBridgeHostCapability.browserConnectionHandoff),
                         producerBoundSnapshotReferences: advertisedCapabilities.contains(
                             PeekabooBridgeHostCapability.producerBoundSnapshotReferences),
+                        scopedMenuBarActions: advertisedCapabilities.contains(
+                            PeekabooBridgeHostCapability.scopedMenuBarActions),
                         targetedClickAccessibilityValueDelivery: advertisedCapabilities.contains(
                             PeekabooBridgeHostCapability.targetedClickAccessibilityValueDelivery),
                         requestPinnedExactWindowScrollReceipt: advertisedCapabilities.contains(

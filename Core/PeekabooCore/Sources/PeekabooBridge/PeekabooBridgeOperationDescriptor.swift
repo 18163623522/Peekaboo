@@ -530,6 +530,14 @@ extension PeekabooBridgeOperationResultSemantics {
                 completion: .readOnly,
                 targetPolicy: .notApplicable,
                 responseFamilies: [.menuBarItems])
+        case .prepareMenuBarItem:
+            descriptor(
+                ownership: .service,
+                read: .globalExclusive,
+                requiredPermissions: [.accessibility],
+                completion: .readOnly,
+                targetPolicy: .notApplicable,
+                responseFamilies: [.menuBarItems])
         case .clickMenuBarItemNamed:
             descriptor(
                 ownership: .service,
