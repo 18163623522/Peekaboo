@@ -36,8 +36,8 @@ final class StubScreenCaptureService: ScreenCaptureServiceProtocol {
     func captureScreen(
         displayIndex: Int?,
         visualizerMode: CaptureVisualizerMode,
-        scale: CaptureScalePreference) async throws -> CaptureResult
-    {
+        scale: CaptureScalePreference
+    ) async throws -> CaptureResult {
         self.captureVisualizerModes.append(visualizerMode)
         if let handler = captureScreenHandler {
             return try await handler(displayIndex, scale)
@@ -49,8 +49,8 @@ final class StubScreenCaptureService: ScreenCaptureServiceProtocol {
         appIdentifier: String,
         windowIndex: Int?,
         visualizerMode: CaptureVisualizerMode,
-        scale: CaptureScalePreference) async throws -> CaptureResult
-    {
+        scale: CaptureScalePreference
+    ) async throws -> CaptureResult {
         self.captureVisualizerModes.append(visualizerMode)
         if let handler = captureWindowHandler {
             return try await handler(appIdentifier, windowIndex, scale)
@@ -61,8 +61,8 @@ final class StubScreenCaptureService: ScreenCaptureServiceProtocol {
     func captureWindow(
         windowID: CGWindowID,
         visualizerMode: CaptureVisualizerMode,
-        scale: CaptureScalePreference) async throws -> CaptureResult
-    {
+        scale: CaptureScalePreference
+    ) async throws -> CaptureResult {
         self.captureVisualizerModes.append(visualizerMode)
         if let handler = captureWindowByIdHandler {
             return try await handler(windowID, scale)
@@ -72,8 +72,8 @@ final class StubScreenCaptureService: ScreenCaptureServiceProtocol {
 
     func captureFrontmost(
         visualizerMode: CaptureVisualizerMode,
-        scale: CaptureScalePreference) async throws -> CaptureResult
-    {
+        scale: CaptureScalePreference
+    ) async throws -> CaptureResult {
         self.captureVisualizerModes.append(visualizerMode)
         if let handler = captureFrontmostHandler {
             return try await handler(scale)
@@ -84,8 +84,8 @@ final class StubScreenCaptureService: ScreenCaptureServiceProtocol {
     func captureArea(
         _ rect: CGRect,
         visualizerMode: CaptureVisualizerMode,
-        scale: CaptureScalePreference) async throws -> CaptureResult
-    {
+        scale: CaptureScalePreference
+    ) async throws -> CaptureResult {
         self.captureVisualizerModes.append(visualizerMode)
         if let handler = captureAreaHandler {
             return try await handler(rect, scale)
@@ -105,7 +105,8 @@ final class StubScreenCaptureService: ScreenCaptureServiceProtocol {
         // Provide a harmless stub image so unexpected capture calls don't crash the test run.
         return CaptureResult(
             imageData: Data(),
-            metadata: CaptureMetadata(size: CGSize(width: 1, height: 1), mode: .screen))
+            metadata: CaptureMetadata(size: CGSize(width: 1, height: 1), mode: .screen)
+        )
     }
 }
 
@@ -119,8 +120,8 @@ ExactWindowTargetedClickServiceProtocol, ElementActionAutomationServiceProtocol 
     func selectText(
         target: String,
         request: TextSelectionRequest,
-        snapshotId: String?) async throws -> UIAutomationActionResult<ElementActionResult>
-    {
+        snapshotId: String?
+    ) async throws -> UIAutomationActionResult<ElementActionResult> {
         throw DesktopActionFailure.preDispatchRefusal(reason: .runtimeIncompatible, message: "Selection unsupported")
     }
 
@@ -220,8 +221,8 @@ ExactWindowTargetedClickServiceProtocol, ElementActionAutomationServiceProtocol 
             expectedProcessIdentity: ApplicationProcessIdentity?,
             expectedWindowIdentity: WindowMutationIdentity? = nil,
             expectedWindowBounds: CGRect? = nil,
-            allowsAccessibilityValueDelivery: Bool? = nil)
-        {
+            allowsAccessibilityValueDelivery: Bool? = nil
+        ) {
             self.target = target
             self.clickType = clickType
             self.snapshotId = snapshotId
@@ -312,8 +313,8 @@ ExactWindowTargetedClickServiceProtocol, ElementActionAutomationServiceProtocol 
     func detectElements(
         in imageData: Data,
         snapshotId: String?,
-        windowContext: WindowContext?) async throws -> ElementDetectionResult
-    {
+        windowContext: WindowContext?
+    ) async throws -> ElementDetectionResult {
         self.detectElementsCalls.append((imageData, snapshotId, windowContext))
 
         if let handler = detectElementsHandler {
@@ -346,15 +347,16 @@ ExactWindowTargetedClickServiceProtocol, ElementActionAutomationServiceProtocol 
         target: ClickTarget,
         clickType: ClickType,
         snapshotId: String?,
-        targetProcessIdentifier: pid_t) async throws
-    {
+        targetProcessIdentifier: pid_t
+    ) async throws {
         self.targetedClickCalls.append(TargetedClickCall(
             target: target,
             clickType: clickType,
             snapshotId: snapshotId,
             targetProcessIdentifier: targetProcessIdentifier,
             targetWindowID: nil,
-            expectedProcessIdentity: nil))
+            expectedProcessIdentity: nil
+        ))
         if let clickError {
             throw clickError
         }
@@ -365,15 +367,16 @@ ExactWindowTargetedClickServiceProtocol, ElementActionAutomationServiceProtocol 
         clickType: ClickType,
         snapshotId: String?,
         targetProcessIdentifier: pid_t,
-        targetWindowID: Int) async throws
-    {
+        targetWindowID: Int
+    ) async throws {
         self.targetedClickCalls.append(TargetedClickCall(
             target: target,
             clickType: clickType,
             snapshotId: snapshotId,
             targetProcessIdentifier: targetProcessIdentifier,
             targetWindowID: targetWindowID,
-            expectedProcessIdentity: nil))
+            expectedProcessIdentity: nil
+        ))
         if let clickError {
             throw clickError
         }
@@ -384,8 +387,8 @@ ExactWindowTargetedClickServiceProtocol, ElementActionAutomationServiceProtocol 
         clickType: ClickType,
         snapshotId: String?,
         expectedWindowIdentity: WindowMutationIdentity,
-        expectedWindowBounds: CGRect) async throws
-    {
+        expectedWindowBounds: CGRect
+    ) async throws {
         self.targetedClickCalls.append(TargetedClickCall(
             target: target,
             clickType: clickType,
@@ -394,9 +397,11 @@ ExactWindowTargetedClickServiceProtocol, ElementActionAutomationServiceProtocol 
             targetWindowID: expectedWindowIdentity.windowID,
             expectedProcessIdentity: ApplicationProcessIdentity(
                 processIdentifier: expectedWindowIdentity.ownerProcessIdentifier,
-                processStartIdentity: expectedWindowIdentity.ownerProcessStartIdentity),
+                processStartIdentity: expectedWindowIdentity.ownerProcessStartIdentity
+            ),
             expectedWindowIdentity: expectedWindowIdentity,
-            expectedWindowBounds: expectedWindowBounds))
+            expectedWindowBounds: expectedWindowBounds
+        ))
         if let clickError {
             throw clickError
         }
@@ -407,24 +412,27 @@ ExactWindowTargetedClickServiceProtocol, ElementActionAutomationServiceProtocol 
         target: String?,
         clearExisting: Bool,
         typingDelay: Int,
-        snapshotId: String?) async throws
-    {
+        snapshotId: String?
+    ) async throws {
         self.typeTextCalls.append(
             TypeTextCall(
                 text: text,
                 target: target,
                 clearExisting: clearExisting,
                 typingDelay: typingDelay,
-                snapshotId: snapshotId))
+                snapshotId: snapshotId
+            )
+        )
     }
 
     func typeActions(
         _ actions: [TypeAction],
         cadence: TypingCadence,
-        snapshotId: String?) async throws -> TypeResult
-    {
+        snapshotId: String?
+    ) async throws -> TypeResult {
         self.typeActionsCalls.append(
-            TypeActionsCall(actions: actions, cadence: cadence, snapshotId: snapshotId))
+            TypeActionsCall(actions: actions, cadence: cadence, snapshotId: snapshotId)
+        )
 
         if let provider = typeActionsResultProvider {
             return provider(actions, cadence, snapshotId)
@@ -435,8 +443,8 @@ ExactWindowTargetedClickServiceProtocol, ElementActionAutomationServiceProtocol 
         }
 
         let totals = actions.reduce(
-            into: (characters: 0, keyPresses: 0, specialKeyPresses: 0))
-        { partial, action in
+            into: (characters: 0, keyPresses: 0, specialKeyPresses: 0)
+        ) { partial, action in
             switch action {
             case let .text(text):
                 partial.characters += text.count
@@ -453,28 +461,32 @@ ExactWindowTargetedClickServiceProtocol, ElementActionAutomationServiceProtocol 
         return TypeResult(
             totalCharacters: totals.characters,
             keyPresses: totals.keyPresses,
-            specialKeyPresses: totals.specialKeyPresses)
+            specialKeyPresses: totals.specialKeyPresses
+        )
     }
 
     func typeActions(
         _ actions: [TypeAction],
         cadence: TypingCadence,
         snapshotId: String?,
-        targetProcessIdentifier: pid_t) async throws -> TypeResult
-    {
+        targetProcessIdentifier: pid_t
+    ) async throws -> TypeResult {
         self.targetedTypeActionsCalls.append(
             TargetedTypeActionsCall(
                 actions: actions,
                 cadence: cadence,
                 snapshotId: snapshotId,
                 targetProcessIdentifier: targetProcessIdentifier,
-                expectedProcessIdentity: nil))
+                expectedProcessIdentity: nil
+            )
+        )
         return try await self.typeActions(actions, cadence: cadence, snapshotId: snapshotId)
     }
 
     func scroll(_ request: ScrollRequest) async throws {
         self.scrollCalls.append(
-            ScrollCall(request: request))
+            ScrollCall(request: request)
+        )
         if let scrollError {
             throw scrollError
         }
@@ -483,8 +495,8 @@ ExactWindowTargetedClickServiceProtocol, ElementActionAutomationServiceProtocol 
     func setValue(
         target: String,
         value: UIElementValue,
-        snapshotId: String?) async throws -> ElementActionResult
-    {
+        snapshotId: String?
+    ) async throws -> ElementActionResult {
         self.setValueCalls.append(SetValueCall(target: target, value: value, snapshotId: snapshotId))
         return ElementActionResult(target: target, actionName: nil, anchorPoint: nil)
     }
@@ -492,12 +504,13 @@ ExactWindowTargetedClickServiceProtocol, ElementActionAutomationServiceProtocol 
     func performAction(
         target: String,
         actionName: String,
-        snapshotId: String?) async throws -> ElementActionResult
-    {
+        snapshotId: String?
+    ) async throws -> ElementActionResult {
         self.performActionCalls.append(PerformActionCall(
             target: target,
             actionName: actionName,
-            snapshotId: snapshotId))
+            snapshotId: snapshotId
+        ))
         return ElementActionResult(target: target, actionName: actionName, anchorPoint: nil)
     }
 
@@ -513,7 +526,8 @@ ExactWindowTargetedClickServiceProtocol, ElementActionAutomationServiceProtocol 
             keys: keys,
             holdDuration: holdDuration,
             targetProcessIdentifier: targetProcessIdentifier,
-            expectedProcessIdentity: nil))
+            expectedProcessIdentity: nil
+        ))
         if let targetedHotkeyError {
             throw targetedHotkeyError
         }
@@ -522,19 +536,20 @@ ExactWindowTargetedClickServiceProtocol, ElementActionAutomationServiceProtocol 
     func hotkey(
         keys: String,
         holdDuration: Int,
-        expectedProcessIdentity: ApplicationProcessIdentity) async throws
-    {
+        expectedProcessIdentity: ApplicationProcessIdentity
+    ) async throws {
         if let currentHotkeyProcessIdentity,
-           currentHotkeyProcessIdentity(expectedProcessIdentity.processIdentifier) != expectedProcessIdentity
-        {
+           currentHotkeyProcessIdentity(expectedProcessIdentity.processIdentifier) != expectedProcessIdentity {
             throw PeekabooError.invalidInput(
-                "Background hotkey target process exited or changed process generation")
+                "Background hotkey target process exited or changed process generation"
+            )
         }
         self.targetedHotkeyCalls.append(TargetedHotkeyCall(
             keys: keys,
             holdDuration: holdDuration,
             targetProcessIdentifier: expectedProcessIdentity.processIdentifier,
-            expectedProcessIdentity: expectedProcessIdentity))
+            expectedProcessIdentity: expectedProcessIdentity
+        ))
         if let targetedHotkeyError {
             throw targetedHotkeyError
         }
@@ -543,7 +558,8 @@ ExactWindowTargetedClickServiceProtocol, ElementActionAutomationServiceProtocol 
 
     func swipe(from: CGPoint, to: CGPoint, duration: Int, steps: Int, profile: MouseMovementProfile) async throws {
         self.swipeCalls.append(
-            SwipeCall(from: from, to: to, duration: duration, steps: steps, profile: profile))
+            SwipeCall(from: from, to: to, duration: duration, steps: steps, profile: profile)
+        )
     }
 
     var accessibilityPermissionGranted = true
@@ -555,10 +571,11 @@ ExactWindowTargetedClickServiceProtocol, ElementActionAutomationServiceProtocol 
     func waitForElement(
         target: ClickTarget,
         timeout: TimeInterval,
-        snapshotId: String?) async throws -> WaitForElementResult
-    {
+        snapshotId: String?
+    ) async throws -> WaitForElementResult {
         self.waitForElementCalls.append(
-            WaitForElementCall(target: target, timeout: timeout, snapshotId: snapshotId))
+            WaitForElementCall(target: target, timeout: timeout, snapshotId: snapshotId)
+        )
 
         if let provider = waitForElementProvider {
             return provider(target, timeout, snapshotId)
@@ -579,12 +596,15 @@ ExactWindowTargetedClickServiceProtocol, ElementActionAutomationServiceProtocol 
                 duration: request.duration,
                 steps: request.steps,
                 modifiers: request.modifiers,
-                profile: request.profile))
+                profile: request.profile
+            )
+        )
     }
 
     func moveMouse(to: CGPoint, duration: Int, steps: Int, profile: MouseMovementProfile) async throws {
         self.moveMouseCalls.append(
-            MoveMouseCall(destination: to, duration: duration, steps: steps, profile: profile))
+            MoveMouseCall(destination: to, duration: duration, steps: steps, profile: profile)
+        )
     }
 
     var currentMouseLocationCalls = 0
@@ -600,8 +620,8 @@ ExactWindowTargetedClickServiceProtocol, ElementActionAutomationServiceProtocol 
 
     func findElement(
         matching criteria: UIElementSearchCriteria,
-        in appName: String?) async throws -> DetectedElement
-    {
+        in appName: String?
+    ) async throws -> DetectedElement {
         throw TestStubError.unimplemented(#function)
     }
 
@@ -641,7 +661,8 @@ class StubApplicationService: ScriptedApplicationInventoryService {
             supportsApplicationLaunchOptions: true,
             supportsApplicationRelaunch: true,
             supportsProcessGenerationPinnedApplicationQuit: true,
-            supportsProcessGenerationPinnedApplicationActivation: true)
+            supportsProcessGenerationPinnedApplicationActivation: true
+        )
     }
 
     override func launchApplication(identifier: String) async throws -> ServiceApplicationInfo {
@@ -650,14 +671,14 @@ class StubApplicationService: ScriptedApplicationInventoryService {
             return result
         }
         if let existing = applications
-            .first(where: { $0.name == identifier || $0.bundleIdentifier == identifier })
-        {
+            .first(where: { $0.name == identifier || $0.bundleIdentifier == identifier }) {
             return existing
         }
         return ServiceApplicationInfo(
             processIdentifier: Int32.random(in: 1000...2000),
             bundleIdentifier: "launched.\(identifier)",
-            name: identifier)
+            name: identifier
+        )
     }
 
     override func launchApplication(request: ApplicationLaunchRequest) async throws -> ServiceApplicationInfo {
@@ -856,8 +877,8 @@ class StubMenuService: MenuServiceProtocol {
     init(
         menusByApp: [String: MenuStructure],
         frontmostMenus: MenuStructure? = nil,
-        menuExtras: [MenuExtraInfo] = [])
-    {
+        menuExtras: [MenuExtraInfo] = []
+    ) {
         self.menusByApp = menusByApp
         self.frontmostMenus = frontmostMenus
         self.menuExtras = menuExtras
@@ -972,8 +993,8 @@ final class StubDialogService: DialogServiceProtocol {
         buttonText: String,
         windowTitle: String?,
         appName: String?,
-        allowGlobalFallback: Bool) async throws -> DialogActionResult
-    {
+        allowGlobalFallback: Bool
+    ) async throws -> DialogActionResult {
         self.clickFallbackRequests.append(allowGlobalFallback)
         return try await self.clickButton(buttonText: buttonText, windowTitle: windowTitle, appName: appName)
     }
@@ -983,8 +1004,8 @@ final class StubDialogService: DialogServiceProtocol {
         fieldIdentifier: String?,
         clearExisting: Bool,
         windowTitle: String?,
-        appName: String?) async throws -> DialogActionResult
-    {
+        appName: String?
+    ) async throws -> DialogActionResult {
         self.enterTextCallCount += 1
         guard self.dialogElements != nil else {
             throw DialogError.noActiveDialog
@@ -1026,11 +1047,13 @@ final class StubDialogService: DialogServiceProtocol {
             windowID: request.target.windowID ?? 73,
             ownerProcessIdentifier: request.target.processIdentifier ?? 42,
             ownerProcessStartIdentity: 9001,
-            capturedBounds: bounds)
+            capturedBounds: bounds
+        )
         return try PreparedDialogActionReceipt(
             token: UUID(),
             kind: request.kind,
-            target: .init(identity: identity, bounds: bounds))
+            target: .init(identity: identity, bounds: bounds)
+        )
     }
 
     func performPreparedDialogAction(_ receipt: PreparedDialogActionReceipt) async throws -> DialogActionResult {
@@ -1045,12 +1068,14 @@ final class StubDialogService: DialogServiceProtocol {
             details: provided?.details ?? [:],
             outcome: provided?.outcome ?? .confirmedChange(
                 delivery: .init(mechanism: .accessibilityAction, mode: .background),
-                unitCount: .one),
+                unitCount: .one
+            ),
             targetReceipt: provided?.targetReceipt ?? receipt.target.actionTargetReceipt,
             targetWindowIdentity: provided?.targetWindowIdentity ?? receipt.target.identity,
             targetWindowBounds: provided?.targetWindowBounds ?? receipt.target.bounds,
             focusedElement: provided?.focusedElement,
-            resolvedTarget: provided?.resolvedTarget)
+            resolvedTarget: provided?.resolvedTarget
+        )
     }
 
     func handleFileDialog(
@@ -1058,8 +1083,8 @@ final class StubDialogService: DialogServiceProtocol {
         filename: String?,
         actionButton: String?,
         ensureExpanded: Bool,
-        appName: String?) async throws -> DialogActionResult
-    {
+        appName: String?
+    ) async throws -> DialogActionResult {
         self.handleFileDialogCallCount += 1
         guard let elements = dialogElements else {
             throw DialogError.noActiveDialog
@@ -1131,15 +1156,16 @@ class StubWindowService: WindowManagementServiceProtocol, WindowMutationInventor
             throw OperationError.interactionFailed(
                 action: "close window",
                 reason: "A minimized window cannot be closed with a verified background-only route; " +
-                    "run `peekaboo window restore` for the same exact target first, or retry with --foreground")
+                    "run `peekaboo window restore` for the same exact target first, or retry with --foreground"
+            )
         }
     }
 
     func closeWindow(
         target: WindowTarget,
         expectedIdentity _: WindowMutationIdentity,
-        allowForegroundFallback: Bool) async throws
-    {
+        allowForegroundFallback: Bool
+    ) async throws {
         try await self.closeWindow(target: target, allowForegroundFallback: allowForegroundFallback)
     }
 
@@ -1163,8 +1189,8 @@ class StubWindowService: WindowManagementServiceProtocol, WindowMutationInventor
     func moveWindow(
         target: WindowTarget,
         expectedIdentity _: WindowMutationIdentity,
-        to position: CGPoint) async throws
-    {
+        to position: CGPoint
+    ) async throws {
         try await self.moveWindow(target: target, to: position)
     }
 
@@ -1180,8 +1206,8 @@ class StubWindowService: WindowManagementServiceProtocol, WindowMutationInventor
     func resizeWindow(
         target: WindowTarget,
         expectedIdentity _: WindowMutationIdentity,
-        to size: CGSize) async throws
-    {
+        to size: CGSize
+    ) async throws {
         try await self.resizeWindow(target: target, to: size)
     }
 
@@ -1196,8 +1222,8 @@ class StubWindowService: WindowManagementServiceProtocol, WindowMutationInventor
     func setWindowBounds(
         target: WindowTarget,
         expectedIdentity _: WindowMutationIdentity,
-        bounds: CGRect) async throws
-    {
+        bounds: CGRect
+    ) async throws {
         try await self.setWindowBounds(target: target, bounds: bounds)
     }
 
@@ -1226,12 +1252,13 @@ class StubWindowService: WindowManagementServiceProtocol, WindowMutationInventor
     }
 
     func windowMutationInventory(
-        target: WindowTarget) async throws -> DesktopTargetPlanning.Inventory<ServiceWindowInfo>
-    {
+        target: WindowTarget
+    ) async throws -> DesktopTargetPlanning.Inventory<ServiceWindowInfo> {
         try await .init(
             items: self.listWindows(target: target),
             completeness: self.inventoryCompleteness,
-            warnings: self.inventoryWarnings)
+            warnings: self.inventoryWarnings
+        )
     }
 
     func getFocusedWindow() async throws -> ServiceWindowInfo? {
@@ -1241,8 +1268,8 @@ class StubWindowService: WindowManagementServiceProtocol, WindowMutationInventor
     @MainActor
     func updateWindow(
         target: WindowTarget,
-        transform: (ServiceWindowInfo) -> ServiceWindowInfo) throws
-    {
+        transform: (ServiceWindowInfo) -> ServiceWindowInfo
+    ) throws {
         let selection = try resolveWindowLocation(target: target)
         var windows = self.windowsByApp[selection.app] ?? []
         guard selection.index < windows.count else {
@@ -1305,7 +1332,8 @@ extension ServiceWindowInfo {
                 ownerProcessIdentifier: $0.ownerProcessIdentifier,
                 ownerProcessStartIdentity: $0.ownerProcessStartIdentity,
                 capturedBounds: bounds,
-                isMinimized: $0.isMinimized)
+                isMinimized: $0.isMinimized
+            )
         }
         return ServiceWindowInfo(
             windowID: windowID,
@@ -1320,13 +1348,14 @@ extension ServiceWindowInfo {
             spaceName: spaceName,
             screenIndex: screenIndex,
             screenName: screenName,
-            mutationIdentity: refreshedIdentity)
+            mutationIdentity: refreshedIdentity
+        )
     }
 
     func withMutationIdentityForTesting(
         ownerProcessIdentifier: Int32 = 42,
-        ownerProcessStartIdentity: UInt64 = 7) -> ServiceWindowInfo
-    {
+        ownerProcessStartIdentity: UInt64 = 7
+    ) -> ServiceWindowInfo {
         guard self.mutationIdentity == nil else { return self }
         return ServiceWindowInfo(
             windowID: self.windowID,
@@ -1353,7 +1382,9 @@ extension ServiceWindowInfo {
                 windowID: self.windowID,
                 ownerProcessIdentifier: ownerProcessIdentifier,
                 ownerProcessStartIdentity: ownerProcessStartIdentity,
-                capturedBounds: self.bounds))
+                capturedBounds: self.bounds
+            )
+        )
     }
 }
 
@@ -1365,12 +1396,14 @@ final class StubSpaceService: SpaceCommandSpaceService {
     var switchOutcome: DesktopActionOutcome? = .dispatchedUnverified(
         delivery: .init(mechanism: .nativeFramework, mode: .foreground),
         evidence: .deliveryAccepted,
-        unitCount: .one)
+        unitCount: .one
+    )
     var switchFailure: DesktopActionFailure?
     var moveOutcome: DesktopActionOutcome = .dispatchedUnverified(
         delivery: .init(mechanism: .nativeFramework, mode: .background),
         evidence: .deliveryAccepted,
-        unitCount: .one)
+        unitCount: .one
+    )
     var moveWindowCalls: [(windowID: CGWindowID, spaceID: CGSSpaceID?)] = []
     var moveToCurrentCalls: [CGWindowID] = []
 
@@ -1389,8 +1422,8 @@ final class StubSpaceService: SpaceCommandSpaceService {
 
     func moveWindowToCurrentSpaceResult(
         windowID: CGWindowID,
-        expectedIdentity: WindowMutationIdentity) async throws -> UIAutomationActionResult<Void>
-    {
+        expectedIdentity: WindowMutationIdentity
+    ) async throws -> UIAutomationActionResult<Void> {
         self.moveToCurrentCalls.append(windowID)
         return try Self.moveResult(outcome: self.moveOutcome, expectedIdentity: expectedIdentity)
     }
@@ -1398,8 +1431,8 @@ final class StubSpaceService: SpaceCommandSpaceService {
     func moveWindowToSpaceResult(
         windowID: CGWindowID,
         expectedIdentity: WindowMutationIdentity,
-        spaceID: CGSSpaceID) async throws -> UIAutomationActionResult<Void>
-    {
+        spaceID: CGSSpaceID
+    ) async throws -> UIAutomationActionResult<Void> {
         self.moveWindowCalls.append((windowID, spaceID))
         return try Self.moveResult(outcome: self.moveOutcome, expectedIdentity: expectedIdentity)
     }
@@ -1414,12 +1447,13 @@ final class StubSpaceService: SpaceCommandSpaceService {
 
     private static func moveResult(
         outcome: DesktopActionOutcome,
-        expectedIdentity: WindowMutationIdentity) throws -> UIAutomationActionResult<Void>
-    {
+        expectedIdentity: WindowMutationIdentity
+    ) throws -> UIAutomationActionResult<Void> {
         guard let bounds = expectedIdentity.capturedBounds else {
             throw DesktopActionFailure.preDispatchRefusal(
                 reason: .targetUnavailable,
-                message: "Test Space target is missing exact bounds.")
+                message: "Test Space target is missing exact bounds."
+            )
         }
         return try UIAutomationActionResult(
             payload: (),
@@ -1427,7 +1461,10 @@ final class StubSpaceService: SpaceCommandSpaceService {
             targetIdentity: DesktopTargetIdentity(
                 exactWindow: UIAutomationTarget.ExactWindow(
                     identity: expectedIdentity,
-                    bounds: bounds)))
+                    bounds: bounds
+                )
+            )
+        )
     }
 }
 
@@ -1446,8 +1483,8 @@ enum TestServicesFactory {
         clipboard: any ClipboardServiceProtocol = StubClipboardService(),
         screens: [ScreenInfo] = [],
         automation: any UIAutomationServiceProtocol = StubAutomationService(),
-        screenCapture: any ScreenCaptureServiceProtocol = StubScreenCaptureService()) -> PeekabooServices
-    {
+        screenCapture: any ScreenCaptureServiceProtocol = StubScreenCaptureService()
+    ) -> PeekabooServices {
         let screenService = StubScreenService(screens: screens)
         return PeekabooServices(
             logging: LoggingService(),
@@ -1465,7 +1502,8 @@ enum TestServicesFactory {
             audioInput: AudioInputService(aiService: PeekabooAIService()),
             agent: nil,
             configuration: ConfigurationManager.shared,
-            screens: screenService)
+            screens: screenService
+        )
     }
 
     @MainActor
@@ -1486,8 +1524,8 @@ enum TestServicesFactory {
         files: any FileServiceProtocol = StubFileService(),
         clipboard: any ClipboardServiceProtocol = StubClipboardService(),
         screens: [ScreenInfo] = [],
-        screenCapture: any ScreenCaptureServiceProtocol = StubScreenCaptureService()) -> AutomationTestContext
-    {
+        screenCapture: any ScreenCaptureServiceProtocol = StubScreenCaptureService()
+    ) -> AutomationTestContext {
         let services = self.makePeekabooServices(
             applications: applications,
             windows: windows,
@@ -1499,7 +1537,8 @@ enum TestServicesFactory {
             clipboard: clipboard,
             screens: screens,
             automation: automation,
-            screenCapture: screenCapture)
+            screenCapture: screenCapture
+        )
 
         return AutomationTestContext(services: services, automation: automation, snapshots: snapshots)
     }
